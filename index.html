@@ -1,87 +1,119 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Deep - Portfolio</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-  <!-- Navbar -->
-  <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <a href="#" class="text-2xl font-bold">Deep</a>
-      <div class="flex items-center gap-8">
-        <div class="hidden md:flex gap-8">
-          <a href="#about" class="hover:text-blue-500 transition">About</a>
-          <a href="#skills" class="hover:text-blue-500 transition">Skills</a>
-          <a href="#projects" class="hover:text-blue-500 transition">Projects</a>
-          <a href="#contact" class="hover:text-blue-500 transition">Contact</a>
-        </div>
-        <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800">
-          🌙
-        </button>
-      </div>
+<!-- ... previous code up to hero ... -->
+
+<!-- Chat Section (modal style) -->
+<div id="chat-modal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-50 transition-opacity">
+  <div class="bg-gray-900 border border-gray-800 rounded-3xl w-full max-w-2xl h-[80vh] flex flex-col overflow-hidden shadow-2xl shadow-blue-500/20">
+    <!-- Header -->
+    <div class="bg-gray-800 p-4 flex justify-between items-center border-b border-gray-700">
+      <h3 class="text-xl font-semibold">Chat with AI (Powered by Groq)</h3>
+      <button id="close-chat" class="text-gray-400 hover:text-white text-2xl">&times;</button>
     </div>
-  </nav>
-
-  <!-- Hero -->
-  <section class="min-h-screen flex items-center pt-20">
-    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-      <div>
-        <h1 class="text-5xl md:text-7xl font-bold leading-tight">
-          Hi, I'm Deep<span class="text-blue-500">.</span>
-        </h1>
-        <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">
-          কলকাতার একটা passionate developer | Android + Web lover
-        </p>
-        <div class="mt-8 flex gap-4">
-          <a href="#contact" class="px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">Get in Touch</a>
-          <a href="#" class="px-8 py-4 border border-gray-300 dark:border-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition">Download CV</a>
-        </div>
-      </div>
-      <div class="relative">
-        <!-- Placeholder for your photo or 3D avatar -->
-        <div class="w-80 h-80 mx-auto rounded-3xl bg-gradient-to-br from-blue-500 to-purple-600 animate-pulse"></div>
-      </div>
+    
+    <!-- Messages -->
+    <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4 bg-black/30">
+      <!-- Messages will be added here -->
     </div>
-  </section>
+    
+    <!-- Input -->
+    <div class="p-4 border-t border-gray-700 bg-gray-800">
+      <form id="chat-form" class="flex gap-3">
+        <input id="chat-input" type="text" placeholder="Type your message..." class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-blue-500 transition" autocomplete="off">
+        <button type="submit" class="px-6 py-4 bg-blue-600 hover:bg-blue-700 rounded-xl font-medium transition">Send</button>
+      </form>
+    </div>
+  </div>
+</div>
 
-  <!-- Add more sections later -->
+<!-- Chat Bubble (floating) -->
+<button id="open-chat" class="fixed bottom-8 right-8 bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/40 hover:scale-110 transition text-3xl z-40">
+  💬
+</button>
 
-  <script>
-    // Theme toggle
-    const toggle = document.getElementById('theme-toggle');
-    const html = document.documentElement;
+<script>
+// ... previous theme toggle script ...
 
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      html.classList.add('dark');
-      toggle.textContent = '☀️';
-    } else {
-      html.classList.remove('dark');
-      toggle.textContent = '🌙';
-    }
+// Chat functionality
+const chatModal = document.getElementById('chat-modal');
+const openChatBtn = document.getElementById('open-chat');
+const closeChatBtn = document.getElementById('close-chat');
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const messagesDiv = document.getElementById('chat-messages');
 
-    toggle.addEventListener('click', () => {
-      html.classList.toggle('dark');
-      localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
-      toggle.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
+let messages = []; // history
+
+openChatBtn.addEventListener('click', () => {
+  chatModal.classList.remove('hidden');
+  chatModal.classList.add('flex');
+  chatInput.focus();
+});
+
+closeChatBtn.addEventListener('click', () => {
+  chatModal.classList.add('hidden');
+  chatModal.classList.remove('flex');
+});
+
+// Add message to UI
+function addMessage(content, isUser = false) {
+  const msg = document.createElement('div');
+  msg.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+  msg.innerHTML = `
+    <div class="${isUser ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-200'} max-w-[80%] p-4 rounded-2xl ${isUser ? 'rounded-br-none' : 'rounded-bl-none'}">
+      ${content}
+    </div>
+  `;
+  messagesDiv.appendChild(msg);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Handle form submit
+chatForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const userMsg = chatInput.value.trim();
+  if (!userMsg) return;
+
+  addMessage(userMsg, true);
+  messages.push({ role: 'user', content: userMsg });
+  chatInput.value = '';
+
+  // Show loading
+  const loadingMsg = document.createElement('div');
+  loadingMsg.className = 'flex justify-start';
+  loadingMsg.innerHTML = `<div class="bg-gray-800 text-gray-200 max-w-[80%] p-4 rounded-2xl rounded-bl-none animate-pulse">Thinking...</div>`;
+  messagesDiv.appendChild(loadingMsg);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+  try {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'jg gjsiydydidigdihdhdiydit', // <-- এখানে তোর Groq API key paste কর
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: messages,
+        temperature: 0.7,
+        max_tokens: 1024
+      })
     });
-  </script>
-</body>
-</html>
+
+    const data = await response.json();
+    if (data.choices && data.choices[0]) {
+      const aiReply = data.choices[0].message.content;
+      messages.push({ role: 'assistant', content: aiReply });
+
+      // Remove loading
+      messagesDiv.removeChild(loadingMsg);
+
+      addMessage(aiReply);
+    } else {
+      throw new Error('No response');
+    }
+  } catch (err) {
+    messagesDiv.removeChild(loadingMsg);
+    addMessage('Error: Could not get response. Check console or API key.', false);
+    console.error(err);
+  }
+});
+</script>
