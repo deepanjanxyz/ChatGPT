@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deep - Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="#" class="text-2xl font-bold">Deep</a>
+      <div class="flex items-center gap-8">
+        <div class="hidden md:flex gap-8">
+          <a href="#about" class="hover:text-blue-500 transition">About</a>
+          <a href="#skills" class="hover:text-blue-500 transition">Skills</a>
+          <a href="#projects" class="hover:text-blue-500 transition">Projects</a>
+          <a href="#contact" class="hover:text-blue-500 transition">Contact</a>
+        </div>
+        <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800">
+          🌙
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="min-h-screen flex items-center pt-20">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+      <div>
+        <h1 class="text-5xl md:text-7xl font-bold leading-tight">
+          Hi, I'm Deep<span class="text-blue-500">.</span>
+        </h1>
+        <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">
+          কলকাতার একটা passionate developer | Android + Web lover
+        </p>
+        <div class="mt-8 flex gap-4">
+          <a href="#contact" class="px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">Get in Touch</a>
+          <a href="#" class="px-8 py-4 border border-gray-300 dark:border-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition">Download CV</a>
+        </div>
+      </div>
+      <div class="relative">
+        <!-- Placeholder for your photo or 3D avatar -->
+        <div class="w-80 h-80 mx-auto rounded-3xl bg-gradient-to-br from-blue-500 to-purple-600 animate-pulse"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Add more sections later -->
+
+  <script>
+    // Theme toggle
+    const toggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      html.classList.add('dark');
+      toggle.textContent = '☀️';
+    } else {
+      html.classList.remove('dark');
+      toggle.textContent = '🌙';
+    }
+
+    toggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+      toggle.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
+    });
+  </script>
+</body>
+</html>
